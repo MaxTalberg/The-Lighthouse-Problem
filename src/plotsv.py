@@ -1,8 +1,13 @@
 import numpy as np
+import tensorflow_probability as tfp
 from matplotlib import pyplot as plt
 from matplotlib.ticker import NullFormatter
 
-def plotv(samples):
+
+tdf = tfp.distributions
+
+
+def plotv1(samples):
     '''
     Plot part v of the coursework.
     '''
@@ -43,7 +48,7 @@ def plotv(samples):
     xymax = np.max([np.max(np.abs(x)), np.max(np.abs(y))])
     lim = (int(xymax/binwidth) + 1) * binwidth
 
-    axScatter.set_xlim((-6, 6))
+    axScatter.set_xlim((-4, 4))
     axScatter.set_ylim((0, 8))
 
     bins = np.arange(-lim, lim + binwidth, binwidth)
@@ -53,5 +58,57 @@ def plotv(samples):
     # Set limits for the histograms
     axHistx.set_xlim(axScatter.get_xlim())
     axHisty.set_ylim(axScatter.get_ylim())
+
+    plt.show()
+
+def plotv2(samples):
+
+    # Assuming alpha_samples and beta_samples are defined and contain your MCMC samples
+    alpha_samples = samples[0]
+    beta_samples = samples[1]
+
+    # Calculate mean, median, and standard deviation
+    mean_alpha = np.mean(alpha_samples)
+    median_alpha = np.median(alpha_samples)
+    std_alpha = np.std(alpha_samples)
+
+    mean_beta = np.mean(beta_samples)
+    median_beta = np.median(beta_samples)
+    std_beta = np.std(beta_samples)
+
+    # Create histograms for alpha and beta
+    fig, axes = plt.subplots(2, 1, figsize=(12, 8))
+
+    # Plot for alpha
+    axes[0].hist(alpha_samples, bins=50, density=True)
+    axes[0].axvline(mean_alpha, color='r', linestyle='-')
+    axes[0].axvline(mean_alpha + std_alpha, color='r', linestyle='--')
+    axes[0].axvline(mean_alpha - std_alpha, color='r', linestyle='--')
+    axes[0].set_xlim([-4, 3.9])
+    axes[0].set_xlabel(r'$\alpha$')
+    axes[0].text(mean_alpha+2*std_alpha+0.1, plt.ylim()[1] * 0.5, fr'$\mu_\alpha$ = {mean_alpha:.2f} $\pm$ {std_alpha:.2f}', horizontalalignment='center', color='r')
+
+
+    # Plot prior for alpha
+    x_alpha = np.linspace(-10, 10, 100)
+    y_alpha = tdf.Uniform(-10, 10).prob(x_alpha).numpy()  # Convert to NumPy array for Matplotlib
+    axes[0].plot(x_alpha, y_alpha, label='Unifrom Prior')
+    axes[0].legend()
+
+    # Plot for beta
+    axes[1].hist(beta_samples, bins=50, density=True)
+    axes[1].axvline(mean_beta, color='r', linestyle='-')
+    axes[1].axvline(mean_beta + std_beta, color='r', linestyle='--')
+    axes[1].axvline(mean_beta - std_beta, color='r', linestyle='--')
+    axes[1].set_xlim([0.1, 7.9])
+    axes[1].set_xlabel(r'$\beta$')
+    axes[1].text(mean_beta+2*std_beta, plt.ylim()[1] * 0.6, fr'$\mu_\beta$ = {mean_beta:.2f} $\pm$ {std_beta:.2f}', horizontalalignment='center', color='r')
+
+
+    # Plot prior for beta
+    x_beta = np.linspace(0, 10, 100)
+    y_beta = tdf.Uniform(0, 10).prob(x_beta).numpy()  # Convert to NumPy array for Matplotlib
+    axes[1].plot(x_beta, y_beta, label='Uniform Prior')
+
 
     plt.show()
