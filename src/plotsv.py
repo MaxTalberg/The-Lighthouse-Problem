@@ -50,8 +50,8 @@ def plotv1(samples, xrange, yrange):
     xymax = np.max([np.max(np.abs(x)), np.max(np.abs(y))])
     lim = (int(xymax/binwidth) + 1) * binwidth
 
-    axScatter.set_xlim((-4, 4))
-    axScatter.set_ylim((0, 8))
+    axScatter.set_xlim((a, b))
+    axScatter.set_ylim((c, d))
 
     bins = np.arange(-lim, lim + binwidth, binwidth)
     axHistx.hist(x, bins=50)
@@ -89,7 +89,7 @@ def plotv2(samples, xrange, yrange):
     axes[0].axvline(mean_alpha, color='r', linestyle='-')
     axes[0].axvline(mean_alpha + std_alpha, color='r', linestyle='--')
     axes[0].axvline(mean_alpha - std_alpha, color='r', linestyle='--')
-    axes[0].set_xlim([-4, 3.9])
+    axes[0].set_xlim([a, b])
     axes[0].set_xlabel(r'$\alpha$')
     axes[0].text(mean_alpha+2*std_alpha+0.1, plt.ylim()[1] * 0.5, fr'$\mu_\alpha$ = {mean_alpha:.2f} $\pm$ {std_alpha:.2f}', horizontalalignment='center', color='r')
 
@@ -105,7 +105,7 @@ def plotv2(samples, xrange, yrange):
     axes[1].axvline(mean_beta, color='r', linestyle='-')
     axes[1].axvline(mean_beta + std_beta, color='r', linestyle='--')
     axes[1].axvline(mean_beta - std_beta, color='r', linestyle='--')
-    axes[1].set_xlim([0.1, 7.9])
+    axes[1].set_xlim([c, d])
     axes[1].set_xlabel(r'$\beta$')
     axes[1].text(mean_beta+2*std_beta, plt.ylim()[1] * 0.6, fr'$\mu_\beta$ = {mean_beta:.2f} $\pm$ {std_beta:.2f}', horizontalalignment='center', color='r')
 
