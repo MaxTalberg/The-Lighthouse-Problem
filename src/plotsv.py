@@ -7,11 +7,13 @@ from matplotlib.ticker import NullFormatter
 tdf = tfp.distributions
 
 
-def plotv1(samples):
+def plotv1(samples, xrange, yrange):
     '''
     Plot part v of the coursework.
     '''
     x, y = samples
+    a, b = xrange
+    c, d = yrange
 
     nullfmt = NullFormatter()
 
@@ -61,7 +63,10 @@ def plotv1(samples):
 
     plt.show()
 
-def plotv2(samples):
+def plotv2(samples, xrange, yrange):
+
+    a, b = xrange
+    c, d = yrange
 
     # Assuming alpha_samples and beta_samples are defined and contain your MCMC samples
     alpha_samples = samples[0]
