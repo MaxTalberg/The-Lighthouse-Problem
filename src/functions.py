@@ -3,8 +3,6 @@ import tensorflow as tf
 import tensorflow_probability as tfp
 import numpy as np
 import matplotlib.pyplot as plt
-from src.plotsiii import plotiii1, plotiii2
-from src.plotsv import plotv1, plotv2
 
 tdf = tfp.distributions
 
@@ -48,3 +46,21 @@ def joint_log_prob_I(x, I, alpha, beta, I0):
 
     return log_uniform_prior + log_likelihood
 
+# Read the data
+def read_data(file_path):
+    '''
+    Function to read data from a text file and return it as two lists.
+    '''
+    # initialise lists to store the data
+    column1 = []  
+    column2 = []  
+    
+    with open(file_path, 'r') as file:  # Open the file for reading
+        for line in file:  # Iterate over each line in the file
+            parts = line.split()  # Split the line by whitespace
+            
+            # Append the parts to their respective column lists
+            column1.append(float(parts[0]))
+            column2.append(float(parts[1]))
+
+    return column1, column2
