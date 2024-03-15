@@ -2,7 +2,6 @@ import sys
 import numpy as np
 import configparser as cfg
 
-# Read the data
 def read_data(file_path):
     try:
         column1, column2 = [], []
@@ -49,3 +48,9 @@ def read_config(input_file):
         'target_accept': config.getfloat('SamplingParameters', 'target_accept', fallback=0.8)
     }
     return model_params, sampling_params
+
+def thinning(trace):
+    '''
+    Function to thin the trace.
+    '''
+    return trace[::10]

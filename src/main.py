@@ -7,7 +7,7 @@ import theano.tensor as tt
 import matplotlib.pyplot as plt
 from functions import read_and_prepare_data, read_config
 from plotsiii import plotiii1, plotiii2
-from plotsv import plotv1, plotv2
+from plots import trace_plot
 from sampling import define_model_x, define_model_xi, sample_model
 
 
@@ -30,9 +30,9 @@ if __name__ == '__main__':
     trace_x = sample_model(model_x, **sampling_params)
     #trace_xi = sample_model(model_xi, **sampling_params)
 
-    summary = az.summary(trace_x)
-    print(summary)
-    az.plot_trace(trace_x) 
-    plt.show()
-    az.plot_posterior(trace_x)
-    plt.show()
+    # Trace plot
+    trace_plot(trace_x)
+    #trace_plot(trace_xi)
+
+    # Thinning
+    
