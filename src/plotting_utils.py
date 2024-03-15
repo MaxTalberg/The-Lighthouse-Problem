@@ -1,3 +1,4 @@
+import corner
 import numpy as np
 import arviz as az
 import tensorflow_probability as tfp
@@ -220,3 +221,17 @@ def plotting_xi(trace):
     marginal_posterior(trace)
     plot_geweke(trace)
     
+
+def appendix_plots(trace):
+    """
+    Function to plot all the appendix plots
+    """
+
+    summary_stats = az.summary(trace, round_to=2)
+
+    # Trace
+    az.plot_trace(trace)
+    plt.show()
+    corner.corner(trace, truths=summary_stats['mean'])
+    plt.show()
+

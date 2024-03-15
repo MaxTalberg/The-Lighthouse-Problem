@@ -1,8 +1,8 @@
 import warnings
 import numpy as np
-from anlaysing_utils import thinning, convergence_diagnostic
+from anlaysing_utils import thinning, convergence_diagnostic, appendix_data
 from reading_utils import read_and_prepare_data, read_config
-from plotting_utils import trace_plot, plotting_x, plotting_xi
+from plotting_utils import trace_plot, plotting_x, plotting_xi, appendix_plots
 from sampling_utils import define_model_x, define_model_xi, sample_model
 
 
@@ -51,3 +51,16 @@ if __name__ == '__main__':
 
     # Plots
     plotting_xi(thinned_trace_xi)
+
+    # Appendix data
+    appendix_data(trace_x)
+    appendix_data(thinned_trace_x)
+    appendix_data(trace_xi)
+    appendix_data(thinned_trace_xi)
+
+    # Appendix plots
+    appendix_plots(trace_x)
+    appendix_plots(thinned_trace_x)
+    appendix_plots(trace_xi)
+    appendix_plots(thinned_trace_xi)
+    

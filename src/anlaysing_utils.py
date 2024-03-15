@@ -63,3 +63,8 @@ def convergence_diagnostic(thinned_trace):
 
     # Print the DataFrame as a table
     print(diagnostic_df)
+
+def appendix_data(trace):
+
+    # Trace
+    print(az.summary(trace, round_to=2))
