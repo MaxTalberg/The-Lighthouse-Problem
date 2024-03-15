@@ -1,8 +1,8 @@
 import warnings
 import numpy as np
-from anlaysing_utils import thinning, convergence_diagnostic, appendix_data
+from anlaysing_utils import thinning, convergence_diagnostic, mean_mle_analysis ,appendix_data, cauchy
 from reading_utils import read_and_prepare_data, read_config
-from plotting_utils import trace_plot, plotting_x, plotting_xi, appendix_plots
+from plotting_utils import plotiii1, plotiii2, trace_plot, plotting_x, plotting_xi, appendix_plots
 from sampling_utils import define_model_x, define_model_xi, sample_model
 
 
@@ -13,6 +13,11 @@ if __name__ == '__main__':
 
     # Set random seed for reproducibility
     np.random.seed(12042000)
+
+    # question iii
+    analysis_results = mean_mle_analysis()
+    plotiii1(cauchy)
+    plotiii2(*analysis_results)
 
     # Read and prepare the data
     x_observed, I_observed = read_and_prepare_data('lighthouse_flash_data.txt')
@@ -51,7 +56,9 @@ if __name__ == '__main__':
 
     # Plots
     plotting_xi(thinned_trace_xi)
+    
 
+    '''
     # Appendix data
     appendix_data(trace_x)
     appendix_data(thinned_trace_x)
@@ -63,4 +70,4 @@ if __name__ == '__main__':
     appendix_plots(thinned_trace_x)
     appendix_plots(trace_xi)
     appendix_plots(thinned_trace_xi)
-    
+    '''

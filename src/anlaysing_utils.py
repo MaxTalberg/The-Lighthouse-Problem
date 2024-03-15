@@ -4,6 +4,39 @@ import arviz as az
 import pandas as pd
 import configparser as cfg
 
+# cauchy distribution
+def cauchy(x, alpha, beta):
+    return beta / np.pi * 1 / (beta**2 + (x - alpha)**2)
+
+# trigonometric function
+def trigonometric(theta, alpha, beta):
+    return beta * np.tan(theta) + alpha
+
+# mean mle analysis
+def mean_mle_analysis():
+     #set seed
+    np.random.seed(120420)
+
+    # Set the parameters
+    alpha = 0
+    beta = 1
+
+    # Generate data for histogram
+    theta = np.random.uniform(-np.pi/2, np.pi/2, 100000)
+    x = trigonometric(theta, alpha, beta)
+
+    # Generate data for the true distribution
+    x_true = np.linspace(-20, 20, 1000)
+    y_true = cauchy(x_true, alpha, beta)
+
+    # Calculate mean and mode
+    mean = np.mean(x)
+    mode = np.median(x)
+
+    bins_number = 200
+
+    return x, x_true, y_true, mean, mode, bins_number
+
 def thinning(trace):
 
     # Compute ESS for all variables

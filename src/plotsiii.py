@@ -1,37 +1,9 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-# set seed
-np.random.seed(120420)
-
-# cauchy distribution
-def cauchy(x, alpha, beta):
-    return beta / np.pi * 1 / (beta**2 + (x - alpha)**2)
-
-# trigonometric function
-def trigonometric(theta, alpha, beta):
-    return beta * np.tan(theta) + alpha
-
-# Set the parameters
-alpha = 0
-beta = 1
-
-# Generate data for histogram
-theta = np.random.uniform(-np.pi/2, np.pi/2, 100000)
-x = trigonometric(theta, alpha, beta)
-
-# Generate data for the true distribution
-x_true = np.linspace(-20, 20, 1000)
-y_true = cauchy(x_true, alpha, beta)
-
-# Calculate mean and mode
-mean = np.mean(x)
-mode = np.median(x)
-
-bins_number = 200
 
 # plotting functions
-def plotiii1():
+def plotiii1(cauchy):
     # plot cauchy distributions
     x = np.linspace(-10, 10, 1000)
     y1 = cauchy(x, alpha=0, beta=0.5)
@@ -47,7 +19,8 @@ def plotiii1():
     plt.xlim(-5, 5)
     plt.show()
 
-def plotiii2():
+def plotiii2(x, x_true, y_true, mean, mode, bins_number
+):
     # Create the histogram with the new number of bins
     n, bins, patches = plt.hist(x, bins=bins_number, density=True, color='blue', alpha=0.7, range=(-20, 20))
 
