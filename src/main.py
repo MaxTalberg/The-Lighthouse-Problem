@@ -5,10 +5,11 @@ import numpy as np
 import arviz as az
 import theano.tensor as tt
 import matplotlib.pyplot as plt
-from Coursework.src.processing_utils import read_and_prepare_data, read_config
+from anlaysing_utils import thinning, convergence_diagnostic
+from reading_utils import read_and_prepare_data, read_config
 from plotsiii import plotiii1, plotiii2
-from plots import trace_plot
-from sampling import define_model_x, define_model_xi, sample_model
+from plotting_utils import trace_plot, plotting_x, plotting_xi
+from sampling_utils import define_model_x, define_model_xi, sample_model
 
 
 warnings.filterwarnings('ignore', category=RuntimeWarning, message='overflow encountered in _beta_ppf')
@@ -26,13 +27,31 @@ if __name__ == '__main__':
     model_x = define_model_x(x_observed, **model_params)
     model_xi = define_model_xi(x_observed, I_observed, **model_params)
 
-    # Sample the models
+    ##  Flash Locations
+    # Run sampling
     trace_x = sample_model(model_x, **sampling_params)
-    #trace_xi = sample_model(model_xi, **sampling_params)
 
     # Trace plot
     trace_plot(trace_x)
-    #trace_plot(trace_xi)
 
-    # Thinning
+    # Thinning and convergence diagnostics
+    thinned_trace_x = thinning(trace_x)
+    convergence_diagnostic(thinned_trace_x)
 
+    # Plots
+    plotting_x(thinned_trace_x)
+
+    ##  Flash Locations and Intensities
+    # Run sampling
+    trace_xi = sample_model(model_xi, **sampling_params)
+
+    # Trace plot
+    trace_plot(trace_xi)
+
+    # Thinning and convergence diagnostics
+    thinned_trace_xi = thinning(trace_xi)
+    convergence_diagnostic(thinned_trace_xi)
+
+    # Plots
+    plotting_xi(thinned_trace_xi)
+    

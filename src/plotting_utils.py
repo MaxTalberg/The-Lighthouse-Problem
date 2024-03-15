@@ -1,7 +1,7 @@
 import numpy as np
 import arviz as az
 import tensorflow_probability as tfp
-from Coursework.src.processing_utils import read_config
+from reading_utils import read_config
 from matplotlib import pyplot as plt
 from matplotlib.ticker import NullFormatter
 
@@ -35,14 +35,16 @@ def trace_plot(trace, figsize=(12, 8)):
 
 def joint_posterior_x(trace):
     """
+    Plots the joint distribution of alpha and beta samples from a trace,
+    with marginal histograms.
     """
-    # unpack trace
-    alpha_samples = trace.get_values('alpha', 'beta')
-    beta_samples = trace.get_values('beta')
+    # Unpack trace
+    alpha_samples = trace.posterior['alpha'].values.flatten()
+    beta_samples = trace.posterior['beta'].values.flatten()
 
     nullfmt = NullFormatter()
 
-    # Definitions for the axes
+    # Define axes
     left, width = 0.1, 0.65
     bottom, height = 0.1, 0.65
     bottom_h = left_h = left + width + 0.02
@@ -59,33 +61,71 @@ def joint_posterior_x(trace):
     axHistx = plt.axes(rect_histx)
     axHisty = plt.axes(rect_histy)
 
-    # No labels
+    # No labels for histograms
     axHistx.xaxis.set_major_formatter(nullfmt)
     axHisty.yaxis.set_major_formatter(nullfmt)
 
-    # Create a hexbin plot with a color bar
-    hb = axScatter.hexbin(alpha_samples, beta_samples, gridsize=50, cmap='inferno', bins='log')
+    # Scatter plot with hexbin
+    hb = axScatter.hexbin(alpha_samples, beta_samples, gridsize=100, cmap='inferno', bins='log')
 
     # Set axis labels
     axScatter.set_xlabel(r'alpha, $\alpha$')
-    axScatter.set_ylabel(r'beta, $\beta$') 
+    axScatter.set_ylabel(r'beta, $\beta$')
 
-    # Determine nice limits by hand
-    binwidth = 0.25
-    xymax = np.max([np.max(np.abs(alpha_samples)), np.max(np.abs(beta_samples))])
-    lim = (int(xymax/binwidth) + 1) * binwidth
+    # Automatically determine nice limits
+    axScatter.set_xlim((alpha_samples.min(), alpha_samples.max()))
+    axScatter.set_ylim((beta_samples.min(), beta_samples.max()))
 
-    axScatter.set_xlim((a, b))
-    axScatter.set_ylim((c, d))
+    # Marginal histograms
+    axHistx.hist(alpha_samples, bins=50, density=True)
+    axHisty.hist(beta_samples, bins=50, orientation='horizontal', density=True)
 
-    bins = np.arange(-lim, lim + binwidth, binwidth)
-    axHistx.hist(x, bins=50)
-    axHisty.hist(y, bins=50, orientation='horizontal')
-
-    # Set limits for the histograms
+    # Set histogram limits to match the scatter plot
     axHistx.set_xlim(axScatter.get_xlim())
     axHisty.set_ylim(axScatter.get_ylim())
 
+    plt.show()
+
+def joint_posterior_xi(trace):
+    """
+    Creates a series of 2D plots for each pair of variables.
+    """
+    # unpack trace
+    alpha_samples = trace.posterior['alpha'].values.flatten()
+    beta_samples = trace.posterior['beta'].values.flatten()
+    I0_samples = trace.posterior['I0'].values.flatten()
+
+    # Start figure
+    fig, axes = plt.subplots(3, 3, figsize=(12, 12))  # Adjust size as needed
+
+    # Plot alpha vs beta
+    axes[1, 0].hexbin(alpha_samples, beta_samples, gridsize=50, cmap='inferno', bins='log')
+    axes[1, 0].set_xlabel(r'alpha, $\alpha$')
+    axes[1, 0].set_ylabel(r'beta, $\beta$')
+
+    # Plot alpha vs I0
+    axes[2, 0].hexbin(alpha_samples, I0_samples, gridsize=50, cmap='inferno', bins='log')
+    axes[2, 0].set_xlabel(r'alpha, $\alpha$')
+    axes[2, 0].set_ylabel('I0')
+
+    # Plot beta vs I0
+    axes[2, 1].hexbin(beta_samples, I0_samples, gridsize=50, cmap='inferno', bins='log')
+    axes[2, 1].set_xlabel(r'beta, $\beta$')
+    axes[2, 1].set_ylabel('I0')
+
+    # Histograms for alpha, beta, and I0
+    axes[0, 0].hist(alpha_samples, bins=50, orientation='vertical')
+ 
+    axes[1, 1].hist(beta_samples, bins=50, orientation='vertical')
+  
+    axes[2, 2].hist(I0_samples, bins=50, orientation='vertical')
+ 
+    # Hide the empty subplots
+    axes[0, 1].axis('off')
+    axes[0, 2].axis('off')
+    axes[1, 2].axis('off')
+
+    plt.tight_layout()
     plt.show()
 
 def marginal_posterior(trace, bins=50, figsize=(12, 8)):
@@ -119,7 +159,6 @@ def marginal_posterior(trace, bins=50, figsize=(12, 8)):
 
 def plot_geweke(trace, intervals=15):
 
-
     var_names = list(trace.posterior.data_vars)
     
     # Determine the number of subplots needed
@@ -150,3 +189,22 @@ def plot_geweke(trace, intervals=15):
 
     plt.tight_layout()
     plt.show()
+
+def plotting_x(trace):
+    """
+    Function to plot all the Flash location plots
+    """
+    joint_posterior_x(trace)
+    marginal_posterior(trace)
+    plot_geweke(trace)
+
+
+    
+def plotting_xi(trace):
+    """
+    Function to plot all the Flash location and Intensity plots
+    """
+    joint_posterior_xi(trace)
+    marginal_posterior(trace)
+    plot_geweke(trace)
+    

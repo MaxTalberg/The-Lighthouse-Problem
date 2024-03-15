@@ -1,6 +1,7 @@
 import sys
 import numpy as np
 import arviz as az
+import pandas as pd
 import configparser as cfg
 
 def thinning(trace):
@@ -30,7 +31,18 @@ def thinning(trace):
     
     return thinned_trace
 
-def conergence_diagnostic(thinned_trace):
-    # Compute the Gelman-Rubin statistic
-    rhat_results = az.rhat(thinned_trace)
-    print
+def convergence_diagnostic(thinned_trace):
+
+    # Compute the mean and standard deviation for each parameter
+    summary_stats = az.summary(thinned_trace, round_to=2)
+
+    # Create a DataFrame to hold the results
+    diagnostic_df = pd.DataFrame({
+        'mean': summary_stats['mean'],
+        'sd': summary_stats['sd'],
+        'tau': summary_stats['ess_bulk'] / summary_stats['ess_mean'],
+        'r_hat': summary_stats['r_hat']
+    })
+
+    # Print the DataFrame as a table
+    print(diagnostic_df)
