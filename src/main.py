@@ -1,13 +1,7 @@
-import time
 import warnings
-import pymc3 as pm
 import numpy as np
-import arviz as az
-import theano.tensor as tt
-import matplotlib.pyplot as plt
 from anlaysing_utils import thinning, convergence_diagnostic
 from reading_utils import read_and_prepare_data, read_config
-from plotsiii import plotiii1, plotiii2
 from plotting_utils import trace_plot, plotting_x, plotting_xi
 from sampling_utils import define_model_x, define_model_xi, sample_model
 
@@ -16,6 +10,9 @@ warnings.filterwarnings('ignore', category=RuntimeWarning, message='overflow enc
 
 
 if __name__ == '__main__':
+
+    # Set random seed for reproducibility
+    np.random.seed(12042000)
 
     # Read and prepare the data
     x_observed, I_observed = read_and_prepare_data('lighthouse_flash_data.txt')
@@ -54,4 +51,3 @@ if __name__ == '__main__':
 
     # Plots
     plotting_xi(thinned_trace_xi)
-    

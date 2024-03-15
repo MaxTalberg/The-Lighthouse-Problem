@@ -28,18 +28,34 @@ def thinning(trace):
 
     # Create a new InferenceData object with the thinned posterior
     thinned_trace = az.InferenceData(posterior=thinned_posterior)
-    
+
+    # Thinned trace
+    num_chains = len(thinned_trace.posterior.chain)
+    num_samples_per_chain = len(thinned_trace.posterior.draw)
+    total_samples_thinned = num_chains * num_samples_per_chain
+
+    print(f"Thinned trace: {total_samples_thinned} samples in total, with {num_samples_per_chain} samples per chain across {num_chains} chains.")
+
     return thinned_trace
 
 def convergence_diagnostic(thinned_trace):
+
+    # Thinned trace
+    num_chains = len(thinned_trace.posterior.chain)
+    num_samples_per_chain = len(thinned_trace.posterior.draw)
+    total_samples_thinned = num_chains * num_samples_per_chain
+
+    # Uncertainty on mean
 
     # Compute the mean and standard deviation for each parameter
     summary_stats = az.summary(thinned_trace, round_to=2)
 
     # Create a DataFrame to hold the results
     diagnostic_df = pd.DataFrame({
-        'mean': summary_stats['mean'],
-        'sd': summary_stats['sd'],
+        r'$\mu': summary_stats['mean'],
+        r'SE_$\mu$s': summary_stats['sd'] / np.sqrt(num_samples_per_chain),
+        r'$\sigma$': summary_stats['sd'],
+        r'$\SE_{\sigma}$': summary_stats['sd'] / np.sqrt(2 * (num_samples_per_chain-1)),
         'tau': summary_stats['ess_bulk'] / summary_stats['ess_mean'],
         'r_hat': summary_stats['r_hat']
     })

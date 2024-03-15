@@ -25,7 +25,12 @@ def trace_plot(trace, figsize=(12, 8)):
         for chain_samples in samples:
             axes[i, 0].plot(chain_samples, lw=0.15, alpha=0.7)
 
-        axes[i, 0].set_title(var_name)
+        if i == 0:
+            axes[i, 0].set_ylabel(r'alpha, $\alpha$')
+        elif i == 1:
+            axes[i, 0].set_ylabel(r'beta, $\beta$')
+        elif i == 2:
+            axes[i, 0].set_ylabel(fr'$I_{0}$')
 
     # Set common labels
     axes[-1, 0].set_xlabel('Iteration')
@@ -54,7 +59,7 @@ def joint_posterior_x(trace):
     rect_histy = [left_h, bottom, 0.2, height]
 
     # Start figure
-    fig = plt.figure(figsize=(9.5, 9))
+    fig = plt.figure(figsize=(12, 8))
 
     # Scatter plot
     axScatter = plt.axes(rect_scatter)
@@ -77,8 +82,8 @@ def joint_posterior_x(trace):
     axScatter.set_ylim((beta_samples.min(), beta_samples.max()))
 
     # Marginal histograms
-    axHistx.hist(alpha_samples, bins=50, density=True)
-    axHisty.hist(beta_samples, bins=50, orientation='horizontal', density=True)
+    axHistx.hist(alpha_samples, bins=50, density=True, alpha=0.6)
+    axHisty.hist(beta_samples, bins=50, orientation='horizontal', density=True, alpha=0.6)
 
     # Set histogram limits to match the scatter plot
     axHistx.set_xlim(axScatter.get_xlim())
@@ -96,7 +101,7 @@ def joint_posterior_xi(trace):
     I0_samples = trace.posterior['I0'].values.flatten()
 
     # Start figure
-    fig, axes = plt.subplots(3, 3, figsize=(12, 12))  # Adjust size as needed
+    fig, axes = plt.subplots(3, 3, figsize=(12, 8))  # Adjust size as needed
 
     # Plot alpha vs beta
     axes[1, 0].hexbin(alpha_samples, beta_samples, gridsize=50, cmap='inferno', bins='log')
@@ -111,14 +116,14 @@ def joint_posterior_xi(trace):
     # Plot beta vs I0
     axes[2, 1].hexbin(beta_samples, I0_samples, gridsize=50, cmap='inferno', bins='log')
     axes[2, 1].set_xlabel(r'beta, $\beta$')
-    axes[2, 1].set_ylabel('I0')
+    axes[2, 1].set_ylabel(fr'$I_{0}$')
 
     # Histograms for alpha, beta, and I0
-    axes[0, 0].hist(alpha_samples, bins=50, orientation='vertical')
+    axes[0, 0].hist(alpha_samples, bins=50, orientation='vertical', alpha=0.6)
  
-    axes[1, 1].hist(beta_samples, bins=50, orientation='vertical')
+    axes[1, 1].hist(beta_samples, bins=50, orientation='vertical', alpha=0.6)
   
-    axes[2, 2].hist(I0_samples, bins=50, orientation='vertical')
+    axes[2, 2].hist(I0_samples, bins=50, orientation='vertical', alpha=0.6)
  
     # Hide the empty subplots
     axes[0, 1].axis('off')
@@ -152,8 +157,13 @@ def marginal_posterior(trace, bins=50, figsize=(12, 8)):
         axes[i, 0].axvline(mean + sd, color='r', linestyle='--')
         axes[i, 0].axvline(mean - sd, color='r', linestyle='--')
         axes[i, 0].set_xlabel(var_name)
-        axes[i, 0].text(mean + 2*sd, plt.ylim()[1] * 0.5, fr'$\mu_{var_name}$ = {mean:.2f} $\pm$ {sd:.2f}', horizontalalignment='center', color='r')
-        
+        if i == 0:
+            axes[i, 0].text(mean + 2*sd, plt.ylim()[1] * 0.5, fr'$\alpha$ = {mean:.2f} $\pm$ {sd:.2f}', horizontalalignment='center', color='r')
+        elif i == 1:
+            axes[i, 0].text(mean + 2*sd, plt.ylim()[1] * 0.5, fr'$\beta$ = {mean:.2f} $\pm$ {sd:.2f}', horizontalalignment='center', color='r')
+        elif i == 2:
+            axes[i, 0].text(mean + 2*sd, plt.ylim()[1] * 0.5, fr'$I_{0}$ = {mean:.2f} $\pm$ {sd:.2f}', horizontalalignment='center', color='r')
+
     plt.tight_layout()
     plt.show()
 
@@ -176,13 +186,17 @@ def plot_geweke(trace, intervals=15):
         iterations, z_scores = geweke_results[:, 0], geweke_results[:, 1]
         
         # Plot Geweke diagnostic
-        axes[i, 0].scatter(iterations, z_scores, color='blue', edgecolor='k')
+        axes[i, 0].scatter(iterations, z_scores, alpha=0.6)
         axes[i, 0].axhline(y=2, color='r', linestyle='--', label=r'2 $\sigma$')
         axes[i, 0].axhline(y=-2, color='r', linestyle='--')
         axes[i, 0].set_ylabel('Z-score')
-        axes[i, 0].set_title(f'Geweke Plot for {var_name}')
-        axes[i, 0].grid(True)
         axes[i, 0].legend(loc='upper right')
+        if i == 0:
+            axes[i, 0].set_title(r'alpha, $\alpha$')
+        elif i == 1:
+            axes[i, 0].set_title(r'beta, $\beta$')
+        elif i == 2:
+            axes[i, 0].set_title(fr'$I_{0}$')
         
     # Set common xlabel
     axes[-1, 0].set_xlabel('Iteration')
@@ -198,8 +212,6 @@ def plotting_x(trace):
     marginal_posterior(trace)
     plot_geweke(trace)
 
-
-    
 def plotting_xi(trace):
     """
     Function to plot all the Flash location and Intensity plots
