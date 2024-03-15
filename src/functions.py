@@ -1,19 +1,42 @@
+import sys
+import numpy as np
+import configparser as cfg
 
 # Read the data
 def read_data(file_path):
-    '''
-    Function to read data from a text file and return it as two lists.
-    '''
-    # initialise lists to store the data
-    column1 = []  
-    column2 = []  
-    
-    with open(file_path, 'r') as file:  # Open the file for reading
-        for line in file:  # Iterate over each line in the file
-            parts = line.split()  # Split the line by whitespace
-            
-            # Append the parts to their respective column lists
-            column1.append(float(parts[0]))
-            column2.append(float(parts[1]))
+    try:
+        column1, column2 = [], []
+        with open(file_path, 'r') as file:
+            for line in file:
+                parts = line.split()
+                column1.append(float(parts[0]))
+                column2.append(float(parts[1]))
+    except FileNotFoundError:
+        print(f"Error: The file {file_path} was not found.")
+        sys.exit(1)
+    except IndexError:
+        print(f"Error: Incorrect file format in {file_path}.")
+        sys.exit(1)
 
     return column1, column2
+
+def read_and_prepare_data(file_path):
+    '''
+    Function to read data from a text file and return it as two numpy arrays.
+    '''
+    data = read_data(file_path)
+    x_observed = np.array(data[0], dtype=np.float32)
+    I_observed = np.array(data[1], dtype=np.float32)
+    return x_observed, I_observed
+
+def read_config(input_file):
+    config = cfg.ConfigParser()
+    config.read(input_file)
+    
+    # Extracting model parameters
+    model_params = {param: float(config['ModelParameters'][param]) for param in config['ModelParameters']}
+    
+    # Extracting sampling parameters
+    sampling_params = {param: float(config['SamplingParameters'][param]) if param != 'chains' else int(config['SamplingParameters'][param]) for param in config['SamplingParameters']}
+    
+    return model_params, sampling_params

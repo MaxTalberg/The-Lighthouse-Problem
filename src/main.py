@@ -47,14 +47,12 @@ if __name__ == '__main__':
         beta = pm.Uniform('beta', lower=c, upper=d)
 
         # Cauchy likelihood of observations
-        Y_obs = pm.Cauchy('Y_obs', alpha=alpha, beta=beta, observed=x_observed)
+        x_likelihood = pm.Cauchy('x_likelihood', alpha=alpha, beta=beta, observed=x_observed)
 
-    # Smple from the model
-    t_start = time.time()
     with model:
         # The default sampler is NUTS, but we'll specify it explicitly for clarity
         trace = pm.sample(draws=30000, tune=800, chains=num_chains, target_accept=0.65)
-    t_end = time.time()
+
 
     # Extract the samples
     alpha_samples = trace.get_values('alpha')
@@ -85,11 +83,11 @@ if __name__ == '__main__':
         I_likelihood = pm.Lognormal('I_likelihood', mu=mu, sigma=1, observed=I_observed)
         
     # Smple from the model
-        t_start = time.time()
-        #with model:
+  
+        with model:
             # The default sampler is NUTS, but we'll specify it explicitly for clarity
-            #trace = pm.sample(draws=30000, tune=800, chains=num_chains, target_accept=0.65)
-        t_end = time.time()
+            trace = pm.sample(draws=30000, tune=800, chains=num_chains, target_accept=0.65)
+   
 
         # Extract the samples
         alpha_samples = trace.get_values('alpha')
