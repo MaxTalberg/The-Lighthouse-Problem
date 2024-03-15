@@ -5,7 +5,7 @@ import numpy as np
 import arviz as az
 import theano.tensor as tt
 import matplotlib.pyplot as plt
-from functions import read_and_prepare_data, read_config
+from Coursework.src.processing_utils import read_and_prepare_data, read_config
 from plotsiii import plotiii1, plotiii2
 from plots import trace_plot
 from sampling import define_model_x, define_model_xi, sample_model
@@ -35,4 +35,4 @@ if __name__ == '__main__':
     #trace_plot(trace_xi)
 
     # Thinning
-    
+

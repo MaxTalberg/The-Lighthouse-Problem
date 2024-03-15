@@ -1,7 +1,7 @@
 import numpy as np
 import arviz as az
 import tensorflow_probability as tfp
-from functions import read_config
+from Coursework.src.processing_utils import read_config
 from matplotlib import pyplot as plt
 from matplotlib.ticker import NullFormatter
 
@@ -119,7 +119,7 @@ def marginal_posterior(trace, bins=50, figsize=(12, 8)):
 
 def plot_geweke(trace, intervals=15):
 
-    
+
     var_names = list(trace.posterior.data_vars)
     
     # Determine the number of subplots needed
