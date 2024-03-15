@@ -39,7 +39,6 @@ def read_config(input_file):
         'b': config.getfloat('ModelParameters', 'b', fallback=5),
         'c': config.getfloat('ModelParameters', 'c', fallback=0),
         'd': config.getfloat('ModelParameters', 'd', fallback=8),
-        'lam': config.getfloat('ModelParameters', 'lam', fallback=1)
     }
 
     # Extracting sampling parameters
@@ -47,6 +46,6 @@ def read_config(input_file):
         'draws': config.getint('SamplingParameters', 'draws', fallback=30000),
         'tune': config.getint('SamplingParameters', 'tune', fallback=800),
         'chains': config.getint('SamplingParameters', 'chains', fallback=8),
-        'target_accept': config.getfloat('SamplingParameters', 'target_accept', fallback=0.65)
+        'target_accept': config.getfloat('SamplingParameters', 'target_accept', fallback=0.8)
     }
     return model_params, sampling_params
