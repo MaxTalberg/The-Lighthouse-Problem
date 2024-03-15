@@ -59,7 +59,7 @@ def joint_posterior_x(trace):
     rect_histy = [left_h, bottom, 0.2, height]
 
     # Start figure
-    fig = plt.figure(figsize=(12, 8))
+    fig = plt.figure(figsize=(9.5, 9))
 
     # Scatter plot
     axScatter = plt.axes(rect_scatter)

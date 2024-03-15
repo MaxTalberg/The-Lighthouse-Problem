@@ -52,10 +52,11 @@ def convergence_diagnostic(thinned_trace):
 
     # Create a DataFrame to hold the results
     diagnostic_df = pd.DataFrame({
-        r'$\mu': summary_stats['mean'],
-        r'SE_$\mu$s': summary_stats['sd'] / np.sqrt(num_samples_per_chain),
-        r'$\sigma$': summary_stats['sd'],
-        r'$\SE_{\sigma}$': summary_stats['sd'] / np.sqrt(2 * (num_samples_per_chain-1)),
+        'mean': summary_stats['mean'],
+        'SE_mean': summary_stats['sd'] / np.sqrt(total_samples_thinned),
+        'sd': summary_stats['sd'],
+        'SE_sd': summary_stats['sd'] / np.sqrt(2 * total_samples_thinned),
+        'sd': summary_stats['sd'],
         'tau': summary_stats['ess_bulk'] / summary_stats['ess_mean'],
         'r_hat': summary_stats['r_hat']
     })

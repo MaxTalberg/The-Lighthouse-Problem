@@ -37,13 +37,15 @@ def define_model_xi(x_observed, I_observed, a, b, c, d):
     Returns:
     - PyMC3 model object.
     """
-    I0_med = np.median(I_observed)
+    # Empirical Bayes estimate for I0
+    I0_med = np.median(np.log(I_observed))
+    I0_std = 1.9644169
     with pm.Model() as model:
         # Priors
         alpha = pm.Uniform('alpha', lower=a, upper=b)
         beta = pm.Uniform('beta', lower=c, upper=d)
-        I0 = pm.LogNormal('I0', mu=np.log(I0_med), sigma=1)
-
+        I0 = pm.Pareto('I0', alpha=1.5, m=0.01)
+        
         # Likelihoods
         pm.Cauchy('x_likelihood', alpha=alpha, beta=beta, observed=x_observed)
         d = tt.sqrt(beta**2 + (x_observed - alpha)**2)
