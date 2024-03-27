@@ -48,6 +48,6 @@ by **Max Talberg**
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### Use of Generative Tools
+## Use of generative tools
 
 This project has utilised autogenerative tools in the development of documentation that is compatible with auto-documentation tools and the development of plotting functions.
