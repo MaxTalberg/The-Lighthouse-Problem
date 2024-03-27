@@ -27,7 +27,7 @@ def define_model_x(x_observed, a, b, c, d):
 
 def define_model_xi(x_observed, I_observed, a, b, c, d):
     """
-    Defines a Bayesian model for x_observed and I_observed data with uniform priors for 
+    Defines a Bayesian model for x_observed and I_observed data with uniform priors for
     alpha and beta and a LogNormal prior for I0.
 
     Parameters:
