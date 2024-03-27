@@ -52,8 +52,19 @@ def define_model_xi(x_observed, I_observed, a, b, c, d):
 
 def sample_model(model, draws, tune, chains, target_accept):
     """
-    Samples from a PyMC3 model using NUTS sampler.
+    Samples from a given PyMC3 model using the No-U-Turn Sampler (NUTS).
+
+    Parameters:
+    - model: A PyMC3 model object to be sampled from.
+    - draws: The number of samples to draw from the posterior distribution.
+    - tune: The number of iterations to tune the sampler.
+    - chains: The number of independent chains to run.
+    - target_accept: The target acceptance probability for the NUTS sampler.
+
+    Returns:
+    - A PyMC3 Trace object containing the samples.
     """
+
     with model:
         step = pm.NUTS(target_accept=target_accept)
         trace = pm.sample(draws=draws, tune=tune, chains=chains, step=step, return_inferencedata=True,)

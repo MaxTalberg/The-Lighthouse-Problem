@@ -4,16 +4,70 @@ import arviz as az
 import pandas as pd
 import configparser as cfg
 
-# cauchy distribution
 def cauchy(x, alpha, beta):
+    """
+    Calculate the Cauchy distribution probability density function (PDF) value.
+
+    Parameters
+    ----------
+    x : float or array_like
+        The point(s) at which the PDF is to be computed.
+    alpha : float
+        Location parameter of the distribution, often called the "peak" of the distribution.
+    beta : float
+        Scale parameter, which dictates the "width" of the distribution.
+
+    Returns
+    -------
+    float or ndarray
+        The PDF value(s) of the Cauchy distribution at the given point(s) x.
+    """
     return beta / np.pi * 1 / (beta**2 + (x - alpha)**2)
 
-# trigonometric function
 def trigonometric(theta, alpha, beta):
+    """
+    Compute a trigonometric function based on the tangent of an angle, modified by scaling and shifting.
+
+    Parameters
+    ----------
+    theta : float or array_like
+        The angle(s) in radians for which the function is computed.
+    alpha : float
+        Shift parameter that vertically shifts the function.
+    beta : float
+        Scale parameter that scales the function vertically.
+
+    Returns
+    -------
+    float or ndarray
+        The computed value(s) of the trigonometric function.
+    """
     return beta * np.tan(theta) + alpha
 
-# mean mle analysis
 def mean_mle_analysis():
+    """
+    Perform maximum likelihood estimation (MLE) analysis using trigonometric data and the Cauchy distribution.
+
+    This function generates random data based on a trigonometric function, analyzes it using the Cauchy distribution,
+    and calculates the mean and mode of the generated data. It also prepares data for histogram representation and the
+    true distribution curve.
+
+    Returns
+    -------
+    x : ndarray
+        Random data generated from the trigonometric function.
+    x_true : ndarray
+        Data points for the x-axis of the true Cauchy distribution curve.
+    y_true : ndarray
+        Probability density values of the true Cauchy distribution.
+    mean : float
+        Mean of the generated trigonometric data.
+    mode : float
+        Mode of the generated trigonometric data.
+    bins_number : int
+        Recommended number of bins for histogram plotting.
+
+    """
      #set seed
     np.random.seed(120420)
 
@@ -38,7 +92,24 @@ def mean_mle_analysis():
     return x, x_true, y_true, mean, mode, bins_number
 
 def thinning(trace):
+    """
+    Apply thinning to the provided trace to reduce autocorrelation.
 
+    This function calculates the effective sample size (ESS) for all variables in the trace, determines the minimum ESS,
+    and computes the thinning interval based on the autocorrelation time (tau). It then thins the trace accordingly and 
+    returns the thinned trace as an InferenceData object.
+
+    Parameters
+    ----------
+    trace : arviz.InferenceData
+        The MCMC trace to be thinned, encapsulated in an ArviZ InferenceData object.
+
+    Returns
+    -------
+    thinned_trace : arviz.InferenceData
+        The thinned trace, encapsulated in an ArviZ InferenceData object.
+
+    """
     # Compute ESS for all variables
     ess_results = az.ess(trace)
 
@@ -72,13 +143,36 @@ def thinning(trace):
     return thinned_trace
 
 def convergence_diagnostic(thinned_trace):
+    """
+    Evaluate convergence diagnostics for a thinned MCMC trace.
 
-    # Thinned trace
+    This function calculates convergence diagnostics for each parameter in the thinned trace, including the mean, 
+    standard error of the mean, standard deviation, standard error of the standard deviation, autocorrelation time 
+    (tau), and the Gelman-Rubin statistic (r_hat). The diagnostics are organized and displayed in a pandas DataFrame.
+
+    Parameters
+    ----------
+    thinned_trace : arviz.InferenceData
+        The thinned MCMC trace for which convergence diagnostics are to be calculated, encapsulated in an ArviZ 
+        InferenceData object.
+
+    Returns
+    -------
+    diagnostic_df : pandas.DataFrame
+        A DataFrame containing the convergence diagnostics for each parameter in the thinned trace, including mean, 
+        standard error of the mean (SE_mean), standard deviation (sd), standard error of the standard deviation (SE_sd), 
+        autocorrelation time (tau), and the Gelman-Rubin statistic (r_hat).
+
+    Notes
+    -----
+    The function prints the DataFrame as a table for quick inspection.
+    """
+
+    # Thinned trace details
     num_chains = len(thinned_trace.posterior.chain)
     num_samples_per_chain = len(thinned_trace.posterior.draw)
     total_samples_thinned = num_chains * num_samples_per_chain
 
-    # Uncertainty on mean
 
     # Compute the mean and standard deviation for each parameter
     summary_stats = az.summary(thinned_trace, round_to=2)
@@ -98,6 +192,20 @@ def convergence_diagnostic(thinned_trace):
     print(diagnostic_df)
 
 def appendix_data(trace):
+    """
+    Print a summary of the MCMC trace data.
 
-    # Trace
+    This function uses ArviZ's summary function to compute and display a summary of the MCMC trace data,
+    including the mean, standard deviation, and the effective sample size for each parameter, among other statistics.
+
+    Parameters
+    ----------
+    trace : arviz.InferenceData
+        The MCMC trace data encapsulated in an ArviZ InferenceData object.
+
+    Notes
+    -----
+    The summary is printed directly to the console.
+    """
+    # Print summary statistics of the trace
     print(az.summary(trace, round_to=2))

@@ -8,6 +8,21 @@ from matplotlib.ticker import NullFormatter
 
 # plotting functions
 def plot_cauchy(cauchy):
+    """
+    Plot several Cauchy distributions with different parameters.
+
+    This function plots three Cauchy distributions over a range of x values,
+    each with different alpha (location) and beta (scale) parameters. The purpose
+    is to illustrate the effect of these parameters on the shape of the distribution.
+
+    Parameters:
+    - cauchy : function
+        The Cauchy distribution function, which should accept x, alpha, and beta as arguments.
+
+    Notes:
+    - The x range for plotting is fixed between -10 and 10.
+    - The function uses Matplotlib for plotting and displays the plot directly.
+    """
     # plot cauchy distributions
     x = np.linspace(-10, 10, 1000)
     y1 = cauchy(x, alpha=0, beta=0.5)
@@ -23,8 +38,30 @@ def plot_cauchy(cauchy):
     plt.xlim(-5, 5)
     plt.show()
 
-def plot_cauchy_analysis(x, x_true, y_true, mean, mode, bins_number
-):
+def plot_cauchy_analysis(x, x_true, y_true, mean, mode, bins_number):
+    """
+    Plot the results of Cauchy distribution analysis including a histogram of sampled data,
+    the true PDF, and lines indicating the sample mean and median.
+
+    Parameters:
+    - x : array_like
+        Sampled data points used to create the histogram.
+    - x_true : array_like
+        Data points for the x-axis of the true Cauchy distribution curve.
+    - y_true : array_like
+        Probability density values of the true Cauchy distribution for each x_true point.
+    - mean : float
+        The calculated mean of the sampled data.
+    - mode : float
+        The calculated mode (approximated here as the median) of the sampled data.
+    - bins_number : int
+        The number of bins to use in the histogram.
+
+    Notes:
+    - The histogram range is fixed between -20 and 20, with density normalized.
+    - The x-axis is limited between -10 and 10 for clearer visualization.
+    - The function uses Matplotlib for plotting and displays the plot directly.
+    """
     # Create the histogram with the new number of bins
     n, bins, patches = plt.hist(x, bins=bins_number, density=True, color='blue', alpha=0.7, range=(-20, 20))
 
@@ -52,7 +89,25 @@ model_params, sampling_params = read_config('parameters.ini')
 a, b, c, d = model_params['a'], model_params['b'], model_params['c'], model_params['d']
 
 def trace_plot(trace, figsize=(12, 8)):
+    """
+    Generate a trace plot for each variable in the provided MCMC trace.
 
+    This function plots the sampling paths (traces) for each variable in the given trace, 
+    allowing for the visualization of the sampling behavior over iterations. It's useful 
+    for diagnosing the mixing and convergence of the chains.
+
+    Parameters:
+    - trace : arviz.InferenceData
+        The trace data from which to generate the trace plots, encapsulated in an ArviZ InferenceData object.
+    - figsize : tuple, optional
+        The size of the figure to create. Default is (12, 8).
+
+    Notes:
+    - The function assumes the possibility of multiple chains and combines them for plotting.
+    - The y-axis labels are set based on the index of the variable in the trace.
+    - The x-axis represents the iteration number.
+    - The function uses Matplotlib for plotting and displays the plot directly.
+    """
     # Extract variable names directly from the InferenceData object
     var_names = list(trace.posterior.data_vars)
 
@@ -82,8 +137,21 @@ def trace_plot(trace, figsize=(12, 8)):
 
 def joint_posterior_x(trace):
     """
-    Plots the joint distribution of alpha and beta samples from a trace,
-    with marginal histograms.
+    Plot the joint distribution of 'alpha' and 'beta' samples from a trace, including marginal histograms.
+
+    This function creates a hexbin scatter plot of the joint distribution of 'alpha' and 'beta' parameters, 
+    with marginal histograms for each parameter. It's useful for visualizing the relationship between the 
+    two parameters and their individual distributions.
+
+    Parameters:
+    - trace : arviz.InferenceData
+        The MCMC trace data, encapsulated in an ArviZ InferenceData object, from which 'alpha' and 'beta' 
+        samples are extracted.
+
+    Notes:
+    - The function automatically determines axis limits based on the data.
+    - Histograms are normalized to represent density.
+    - The function uses Matplotlib for plotting and displays the plot directly.
     """
     # Unpack trace
     alpha_samples = trace.posterior['alpha'].values.flatten()
@@ -135,7 +203,19 @@ def joint_posterior_x(trace):
 
 def joint_posterior_xi(trace):
     """
-    Creates a series of 2D plots for each pair of variables.
+    Creates a series of 2D hexbin plots for each pair of variables in the trace, along with marginal histograms.
+
+    This function visualizes the joint distributions between pairs of variables ('alpha', 'beta', and 'I0') 
+    from the trace using hexbin plots. It also includes histograms for the marginal distributions of each variable.
+
+    Parameters:
+    - trace : arviz.InferenceData
+        The MCMC trace data, encapsulated in an ArviZ InferenceData object.
+
+    Notes:
+    - The function uses Matplotlib for plotting and displays the plot directly.
+    - Histograms for each variable are plotted along the diagonal of the subplot grid.
+    - Empty subplots are hidden for aesthetic reasons.
     """
     # unpack trace
     alpha_samples = trace.posterior['alpha'].values.flatten()
@@ -176,7 +256,24 @@ def joint_posterior_xi(trace):
     plt.show()
 
 def marginal_posterior(trace, bins=50, figsize=(12, 8)):
-    
+    """
+    Plot the marginal posterior distributions for each variable in the trace, including mean and standard deviation markers.
+
+    This function generates histograms for the marginal posterior distributions of each variable in the trace.
+    It also marks the mean and standard deviation (mean ± sd) on the histograms to provide summary statistics visually.
+
+    Parameters:
+    - trace : arviz.InferenceData
+        The MCMC trace data, encapsulated in an ArviZ InferenceData object.
+    - bins : int, optional
+        The number of bins to use for the histograms. Default is 50.
+    - figsize : tuple, optional
+        The size of the figure to create. Default is (12, 8).
+
+    Notes:
+    - The function uses Matplotlib for plotting and displays the plot directly.
+    - Summary statistics are obtained using ArviZ's summary function.
+    """
     var_names = list(trace.posterior.data_vars)
 
     # Obtain summary statistics using ArviZ
@@ -210,7 +307,25 @@ def marginal_posterior(trace, bins=50, figsize=(12, 8)):
     plt.show()
 
 def plot_geweke(trace, intervals=15):
+    """
+    Plot the Geweke diagnostic for each variable in the MCMC trace.
 
+    The Geweke diagnostic is a convergence diagnostic that compares the mean and variance of segments 
+    from the beginning and end of a single chain. This function plots the Geweke z-scores for each variable 
+    across specified intervals, helping to assess the chain's convergence.
+
+    Parameters:
+    - trace : arviz.InferenceData
+        The MCMC trace data, encapsulated in an ArviZ InferenceData object.
+    - intervals : int, optional
+        The number of intervals to divide the trace into for the Geweke diagnostic. Default is 15.
+
+    Notes:
+    - The function plots z-scores and marks the ±2 standard deviation range with horizontal lines.
+    - Z-scores within ±2 suggest that the segment means are within 2 standard deviations of each other, 
+      indicating convergence.
+    - The function uses Matplotlib for plotting and displays the plot directly.
+    """
     var_names = list(trace.posterior.data_vars)
     
     # Determine the number of subplots needed
@@ -248,7 +363,17 @@ def plot_geweke(trace, intervals=15):
 
 def plotting_x(trace):
     """
-    Function to plot all the Flash location plots
+    Plot a comprehensive analysis of the MCMC trace for 'x' variables, including joint distributions, marginal posteriors, and convergence diagnostics.
+
+    This high-level function orchestrates the plotting of several key diagnostic and exploratory plots for assessing the MCMC sampling results. It includes the joint distribution of the 'alpha' and 'beta' parameters, marginal posterior distributions for all variables, and Geweke convergence diagnostics.
+
+    Parameters:
+    - trace : arviz.InferenceData
+        The MCMC trace data, encapsulated in an ArviZ InferenceData object.
+
+    Notes:
+    - This function calls `joint_posterior_x`, `marginal_posterior`, and `plot_geweke` to generate the plots.
+    - The function uses Matplotlib for plotting and displays the plots directly.
     """
     joint_posterior_x(trace)
     marginal_posterior(trace)
@@ -256,7 +381,17 @@ def plotting_x(trace):
 
 def plotting_xi(trace):
     """
-    Function to plot all the Flash location and Intensity plots
+    Plot a comprehensive analysis of the MCMC trace for 'x' variables and intensities, including joint distributions, marginal posteriors, and convergence diagnostics.
+
+    This function orchestrates the plotting of several key diagnostic and exploratory plots for assessing the MCMC sampling results related to flash location and intensity variables. It visualizes the joint distributions for pairs of parameters, marginal posterior distributions for all variables, and Geweke convergence diagnostics.
+
+    Parameters:
+    - trace : arviz.InferenceData
+        The MCMC trace data, encapsulated in an ArviZ InferenceData object.
+
+    Notes:
+    - The function calls `joint_posterior_xi`, `marginal_posterior`, and `plot_geweke` sequentially to generate the plots.
+    - Plots are displayed directly using Matplotlib.
     """
     joint_posterior_xi(trace)
     marginal_posterior(trace)
@@ -264,9 +399,18 @@ def plotting_xi(trace):
     
 def appendix_plots(trace):
     """
-    Function to plot all the appendix plots
-    """
+    Generate and display plots for the appendix, including trace plots and corner plots.
 
+    This function first displays trace plots for each variable in the trace, allowing for the visualization of the sampling paths and their distributions. Following this, it creates corner plots (also known as pair plots) that show the multidimensional relationships between variables, including scatter plots for joint distributions and histograms for marginal distributions.
+
+    Parameters:
+    - trace : arviz.InferenceData
+        The MCMC trace data, encapsulated in an ArviZ InferenceData object.
+
+    Notes:
+    - Summary statistics are calculated using ArviZ's summary function, and these are optionally used as truths in the corner plot.
+    - The function uses ArviZ for trace plots and the `corner` module for corner plots, displaying them directly.
+    """
     summary_stats = az.summary(trace, round_to=2)
 
     # Trace
@@ -274,4 +418,3 @@ def appendix_plots(trace):
     plt.show()
     corner.corner(trace, truths=summary_stats['mean'])
     plt.show()
-
