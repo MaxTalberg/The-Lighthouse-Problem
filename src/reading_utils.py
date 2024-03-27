@@ -1,6 +1,5 @@
 import sys
 import numpy as np
-
 import configparser as cfg
 
 def read_data(file_path):

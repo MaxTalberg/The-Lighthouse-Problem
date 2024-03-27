@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 from matplotlib.ticker import NullFormatter
 
 # plotting functions
-def plotiii1(cauchy):
+def plot_cauchy(cauchy):
     # plot cauchy distributions
     x = np.linspace(-10, 10, 1000)
     y1 = cauchy(x, alpha=0, beta=0.5)
@@ -23,7 +23,7 @@ def plotiii1(cauchy):
     plt.xlim(-5, 5)
     plt.show()
 
-def plotiii2(x, x_true, y_true, mean, mode, bins_number
+def plot_cauchy_analysis(x, x_true, y_true, mean, mode, bins_number
 ):
     # Create the histogram with the new number of bins
     n, bins, patches = plt.hist(x, bins=bins_number, density=True, color='blue', alpha=0.7, range=(-20, 20))

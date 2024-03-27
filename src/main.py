@@ -2,7 +2,7 @@ import warnings
 import numpy as np
 from anlaysing_utils import thinning, convergence_diagnostic, mean_mle_analysis ,appendix_data, cauchy
 from reading_utils import read_and_prepare_data, read_config
-from plotting_utils import plotiii1, plotiii2, trace_plot, plotting_x, plotting_xi, appendix_plots
+from plotting_utils import plot_cauchy, plot_cauchy_analysis, trace_plot, plotting_x, plotting_xi, appendix_plots
 from sampling_utils import define_model_x, define_model_xi, sample_model
 
 
@@ -16,8 +16,8 @@ if __name__ == '__main__':
 
     # question iii
     analysis_results = mean_mle_analysis()
-    plotiii1(cauchy)
-    plotiii2(*analysis_results)
+    plot_cauchy(cauchy)
+    plot_cauchy_analysis(*analysis_results)
 
     # Read and prepare the data
     x_observed, I_observed = read_and_prepare_data('lighthouse_flash_data.txt')
