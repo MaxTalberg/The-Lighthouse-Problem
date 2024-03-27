@@ -50,4 +50,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Use of Generative Tools
 
-This project has utilised autogenerative tools in the development of documentation that is compatible with auto-documentation tools, as well as the development of plotting functions.
+This project has utilised autogenerative tools in the development of documentation that is compatible with auto-documentation tools and the development of plotting functions.
