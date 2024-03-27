@@ -1,0 +1,16 @@
+name: lighthouse-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - arviz=0.11.1
+  - pandas=2.0.3
+  - python=3.8.18
+  - theano-pymc=1.1.2
+  - pip
+  - pip:
+      - corner==2.2.1
+      - matplotlib==3.7.5
+      - numpy==1.22.1
+      - pymc3==3.11.5
+      - pytensor==2.12.3

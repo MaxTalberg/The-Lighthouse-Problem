@@ -1,9 +1,9 @@
 import corner
 import numpy as np
 import arviz as az
-from reading_utils import read_config
 from matplotlib import pyplot as plt
 from matplotlib.ticker import NullFormatter
+from reading_utils import read_config
 
 
 # Read the configuration file
