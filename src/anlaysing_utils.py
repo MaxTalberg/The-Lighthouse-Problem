@@ -1,8 +1,6 @@
-import sys
 import numpy as np
 import arviz as az
 import pandas as pd
-import configparser as cfg
 
 def cauchy(x, alpha, beta):
     """
@@ -11,16 +9,16 @@ def cauchy(x, alpha, beta):
     Parameters
     ----------
     x : float or array_like
-        The point(s) at which the PDF is to be computed.
+        The points at which the PDF is to be computed.
     alpha : float
-        Location parameter of the distribution, often called the "peak" of the distribution.
+        Location parameter of the distribution, which dictates the "peak" of the distribution.
     beta : float
         Scale parameter, which dictates the "width" of the distribution.
 
     Returns
     -------
     float or ndarray
-        The PDF value(s) of the Cauchy distribution at the given point(s) x.
+        The PDF values of the Cauchy distribution at the given x points.
     """
     return beta / np.pi * 1 / (beta**2 + (x - alpha)**2)
 
@@ -31,7 +29,7 @@ def trigonometric(theta, alpha, beta):
     Parameters
     ----------
     theta : float or array_like
-        The angle(s) in radians for which the function is computed.
+        The angles in radians for which the function is computed.
     alpha : float
         Shift parameter that vertically shifts the function.
     beta : float
@@ -40,17 +38,22 @@ def trigonometric(theta, alpha, beta):
     Returns
     -------
     float or ndarray
-        The computed value(s) of the trigonometric function.
+        The computed values of the trigonometric function.
     """
     return beta * np.tan(theta) + alpha
 
-def mean_mle_analysis():
+def mean_mle_analysis(seed):
     """
     Perform maximum likelihood estimation (MLE) analysis using trigonometric data and the Cauchy distribution.
 
-    This function generates random data based on a trigonometric function, analyzes it using the Cauchy distribution,
+    This function generates random data based on a trigonometric function, analyses it using the Cauchy distribution,
     and calculates the mean and mode of the generated data. It also prepares data for histogram representation and the
     true distribution curve.
+
+    Parameters
+    ----------
+    seed : int, optional
+        The random seed for reproducibility. 
 
     Returns
     -------
@@ -68,8 +71,8 @@ def mean_mle_analysis():
         Recommended number of bins for histogram plotting.
 
     """
-     #set seed
-    np.random.seed(120420)
+    # Set the seed for reproducibility
+    np.random.seed(seed)
 
     # Set the parameters
     alpha = 0
@@ -148,7 +151,7 @@ def convergence_diagnostic(thinned_trace):
 
     This function calculates convergence diagnostics for each parameter in the thinned trace, including the mean, 
     standard error of the mean, standard deviation, standard error of the standard deviation, autocorrelation time 
-    (tau), and the Gelman-Rubin statistic (r_hat). The diagnostics are organized and displayed in a pandas DataFrame.
+    (tau), and the Gelman-Rubin statistic (r_hat). The diagnostics are organised and displayed in a pandas DataFrame.
 
     Parameters
     ----------

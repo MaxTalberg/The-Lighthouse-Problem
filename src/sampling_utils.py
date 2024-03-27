@@ -1,5 +1,6 @@
 import pymc3 as pm
 import theano.tensor as tt
+import numpy as np
 
 def define_model_x(x_observed, a, b, c, d):
     """
@@ -50,12 +51,13 @@ def define_model_xi(x_observed, I_observed, a, b, c, d):
     return model
 
 
-def sample_model(model, draws, tune, chains, target_accept):
+def sample_model(model, seed, draws, tune, chains, target_accept):
     """
     Samples from a given PyMC3 model using the No-U-Turn Sampler (NUTS).
 
     Parameters:
     - model: A PyMC3 model object to be sampled from.
+    - seed: The random seed to use for reproducibility.
     - draws: The number of samples to draw from the posterior distribution.
     - tune: The number of iterations to tune the sampler.
     - chains: The number of independent chains to run.
@@ -64,6 +66,7 @@ def sample_model(model, draws, tune, chains, target_accept):
     Returns:
     - A PyMC3 Trace object containing the samples.
     """
+    np.random.seed(seed)
 
     with model:
         step = pm.NUTS(target_accept=target_accept)

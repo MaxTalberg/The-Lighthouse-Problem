@@ -6,7 +6,12 @@ from reading_utils import read_config
 from matplotlib import pyplot as plt
 from matplotlib.ticker import NullFormatter
 
-# plotting functions
+
+# Read the configuration file
+model_params, sampling_params, seed = read_config('parameters.ini')
+a, b, c, d = model_params['a'], model_params['b'], model_params['c'], model_params['d']
+
+
 def plot_cauchy(cauchy):
     """
     Plot several Cauchy distributions with different parameters.
@@ -23,7 +28,7 @@ def plot_cauchy(cauchy):
     - The x range for plotting is fixed between -10 and 10.
     - The function uses Matplotlib for plotting and displays the plot directly.
     """
-    # plot cauchy distributions
+    # generate points for cauchy distributions
     x = np.linspace(-10, 10, 1000)
     y1 = cauchy(x, alpha=0, beta=0.5)
     y2 = cauchy(x, alpha=0, beta=1)
@@ -36,6 +41,8 @@ def plot_cauchy(cauchy):
     plt.xlabel('x')
     plt.ylabel('P(x)')
     plt.xlim(-5, 5)
+
+    plt.tight_layout()
     plt.show()
 
 def plot_cauchy_analysis(x, x_true, y_true, mean, mode, bins_number):
@@ -58,12 +65,12 @@ def plot_cauchy_analysis(x, x_true, y_true, mean, mode, bins_number):
         The number of bins to use in the histogram.
 
     Notes:
-    - The histogram range is fixed between -20 and 20, with density normalized.
-    - The x-axis is limited between -10 and 10 for clearer visualization.
+    - The histogram range is fixed between -20 and 20, with density normalised.
+    - The x-axis is limited between -10 and 10 for clearer visualisation.
     - The function uses Matplotlib for plotting and displays the plot directly.
     """
     # Create the histogram with the new number of bins
-    n, bins, patches = plt.hist(x, bins=bins_number, density=True, color='blue', alpha=0.7, range=(-20, 20))
+    _, _, _ = plt.hist(x, bins=bins_number, density=True, color='blue', alpha=0.7, range=(-20, 20))
 
     # Add the Cauchy distribution PDF
     plt.plot(x_true, y_true, 'r', label='True PDF')
@@ -72,7 +79,7 @@ def plot_cauchy_analysis(x, x_true, y_true, mean, mode, bins_number):
     plt.axvline(mean, color='magenta', linestyle='dashed', linewidth=1.5, label='Sample Mean')
     plt.axvline(mode, color='orange', linestyle='dashed', linewidth=1.5, label='Sample Median')
 
-    # Limit the x-axis to better visualize the peak
+    # Limit the x-axis to better visualise the peak
     plt.xlim(-10, 10)
 
     # Add a legend to the plot
@@ -81,19 +88,15 @@ def plot_cauchy_analysis(x, x_true, y_true, mean, mode, bins_number):
     plt.xlabel('x')
     plt.ylabel('P(x)')
 
-    # Show the plot
+    plt.tight_layout()
     plt.show()
-
-# Read the configuration file
-model_params, sampling_params = read_config('parameters.ini')
-a, b, c, d = model_params['a'], model_params['b'], model_params['c'], model_params['d']
 
 def trace_plot(trace, figsize=(12, 8)):
     """
     Generate a trace plot for each variable in the provided MCMC trace.
 
     This function plots the sampling paths (traces) for each variable in the given trace, 
-    allowing for the visualization of the sampling behavior over iterations. It's useful 
+    allowing for the visualisation of the sampling behavior over iterations. It's useful 
     for diagnosing the mixing and convergence of the chains.
 
     Parameters:
@@ -112,10 +115,10 @@ def trace_plot(trace, figsize=(12, 8)):
     var_names = list(trace.posterior.data_vars)
 
     n_vars = len(var_names)
-    fig, axes = plt.subplots(n_vars, 1, sharex=True, figsize=figsize, squeeze=False)
+    _, axes = plt.subplots(n_vars, 1, sharex=True, figsize=figsize, squeeze=False)
 
     for i, var_name in enumerate(var_names):
-        # Extract samples, combining chains if there are multiple
+        # Extract samples and combine chains
         samples = trace.posterior[var_name].values
 
         # Plot trace for each chain
@@ -140,7 +143,7 @@ def joint_posterior_x(trace):
     Plot the joint distribution of 'alpha' and 'beta' samples from a trace, including marginal histograms.
 
     This function creates a hexbin scatter plot of the joint distribution of 'alpha' and 'beta' parameters, 
-    with marginal histograms for each parameter. It's useful for visualizing the relationship between the 
+    with marginal histograms for each parameter. It's useful for visualising the relationship between the 
     two parameters and their individual distributions.
 
     Parameters:
@@ -150,7 +153,7 @@ def joint_posterior_x(trace):
 
     Notes:
     - The function automatically determines axis limits based on the data.
-    - Histograms are normalized to represent density.
+    - Histograms are normalised to represent density.
     - The function uses Matplotlib for plotting and displays the plot directly.
     """
     # Unpack trace
@@ -169,7 +172,7 @@ def joint_posterior_x(trace):
     rect_histy = [left_h, bottom, 0.2, height]
 
     # Start figure
-    fig = plt.figure(figsize=(9.5, 9))
+    _ = plt.figure(figsize=(9.5, 9))
 
     # Scatter plot
     axScatter = plt.axes(rect_scatter)
@@ -181,7 +184,7 @@ def joint_posterior_x(trace):
     axHisty.yaxis.set_major_formatter(nullfmt)
 
     # Scatter plot with hexbin
-    hb = axScatter.hexbin(alpha_samples, beta_samples, gridsize=100, cmap='inferno', bins='log')
+    _ = axScatter.hexbin(alpha_samples, beta_samples, gridsize=100, cmap='inferno', bins='log')
 
     # Set axis labels
     axScatter.set_xlabel(r'alpha, $\alpha$')
@@ -199,13 +202,14 @@ def joint_posterior_x(trace):
     axHistx.set_xlim(axScatter.get_xlim())
     axHisty.set_ylim(axScatter.get_ylim())
 
+    plt.tight_layout()
     plt.show()
 
 def joint_posterior_xi(trace):
     """
     Creates a series of 2D hexbin plots for each pair of variables in the trace, along with marginal histograms.
 
-    This function visualizes the joint distributions between pairs of variables ('alpha', 'beta', and 'I0') 
+    This function visualises the joint distributions between pairs of variables ('alpha', 'beta', and 'I0') 
     from the trace using hexbin plots. It also includes histograms for the marginal distributions of each variable.
 
     Parameters:
@@ -223,7 +227,7 @@ def joint_posterior_xi(trace):
     I0_samples = trace.posterior['I0'].values.flatten()
 
     # Start figure
-    fig, axes = plt.subplots(3, 3, figsize=(12, 8))  # Adjust size as needed
+    fig, axes = plt.subplots(3, 3, figsize=(12, 8)) 
 
     # Plot alpha vs beta
     axes[1, 0].hexbin(alpha_samples, beta_samples, gridsize=50, cmap='inferno', bins='log')
@@ -416,5 +420,7 @@ def appendix_plots(trace):
     # Trace
     az.plot_trace(trace)
     plt.show()
+    
+    # Corner plot
     corner.corner(trace, truths=summary_stats['mean'])
     plt.show()
