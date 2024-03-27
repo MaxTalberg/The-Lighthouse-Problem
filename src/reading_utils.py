@@ -78,6 +78,8 @@ def read_config(input_file):
         Dictionary containing model parameters with keys 'a', 'b', 'c', and 'd'.
     - sampling_params : dict
         Dictionary containing sampling parameters with keys 'draws', 'tune', 'chains', and 'target_accept'.
+    -seed : int
+        Intiger container the unique seed number
     """
     config = cfg.ConfigParser()
     config.read(input_file)
@@ -97,4 +99,8 @@ def read_config(input_file):
         'chains': config.getint('SamplingParameters', 'chains', fallback=8),
         'target_accept': config.getfloat('SamplingParameters', 'target_accept', fallback=0.8)
     }
-    return model_params, sampling_params
+
+    # Extracting seed
+    seed = config.getint('General', 'seed', fallback=12042000)
+
+    return model_params, sampling_params, seed
