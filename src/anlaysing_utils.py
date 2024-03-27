@@ -2,6 +2,7 @@ import numpy as np
 import arviz as az
 import pandas as pd
 
+
 def cauchy(x, alpha, beta):
     """
     Calculate the Cauchy distribution probability density function (PDF) value.
@@ -11,7 +12,8 @@ def cauchy(x, alpha, beta):
     x : float or array_like
         The points at which the PDF is to be computed.
     alpha : float
-        Location parameter of the distribution, which dictates the "peak" of the distribution.
+        Location parameter of the distribution, which dictates the
+        "peak" of the distribution.
     beta : float
         Scale parameter, which dictates the "width" of the distribution.
 
@@ -20,11 +22,13 @@ def cauchy(x, alpha, beta):
     float or ndarray
         The PDF values of the Cauchy distribution at the given x points.
     """
-    return beta / np.pi * 1 / (beta**2 + (x - alpha)**2)
+    return beta / np.pi * 1 / (beta**2 + (x - alpha) ** 2)
+
 
 def trigonometric(theta, alpha, beta):
     """
-    Compute a trigonometric function based on the tangent of an angle, modified by scaling and shifting.
+    Compute a trigonometric function based on the tangent of an angle,
+    modified by scaling and shifting.
 
     Parameters
     ----------
@@ -42,18 +46,21 @@ def trigonometric(theta, alpha, beta):
     """
     return beta * np.tan(theta) + alpha
 
+
 def mean_mle_analysis(seed):
     """
-    Perform maximum likelihood estimation (MLE) analysis using trigonometric data and the Cauchy distribution.
+    Perform maximum likelihood estimation (MLE) analysis using trigonometric data
+    and the Cauchy distribution.
 
-    This function generates random data based on a trigonometric function, analyses it using the Cauchy distribution,
-    and calculates the mean and mode of the generated data. It also prepares data for histogram representation and the
+    This function generates random data based on a trigonometric function, analyses
+    it using the Cauchy distribution and calculates the mean and mode of the
+    generated data. It also prepares data for histogram representation and the
     true distribution curve.
 
     Parameters
     ----------
     seed : int, optional
-        The random seed for reproducibility. 
+        The random seed for reproducibility.
 
     Returns
     -------
@@ -79,7 +86,7 @@ def mean_mle_analysis(seed):
     beta = 1
 
     # Generate data for histogram
-    theta = np.random.uniform(-np.pi/2, np.pi/2, 100000)
+    theta = np.random.uniform(-np.pi / 2, np.pi / 2, 100000)
     x = trigonometric(theta, alpha, beta)
 
     # Generate data for the true distribution
@@ -94,13 +101,15 @@ def mean_mle_analysis(seed):
 
     return x, x_true, y_true, mean, mode, bins_number
 
+
 def thinning(trace):
     """
     Apply thinning to the provided trace to reduce autocorrelation.
 
-    This function calculates the effective sample size (ESS) for all variables in the trace, determines the minimum ESS,
-    and computes the thinning interval based on the autocorrelation time (tau). It then thins the trace accordingly and 
-    returns the thinned trace as an InferenceData object.
+    This function calculates the effective sample size (ESS) for all variables
+    in the trace, determines the minimum ESS and computes the thinning interval
+    based on the autocorrelation time (tau). It then thins the trace accordingly
+    and returns the thinned trace as an InferenceData object.
 
     Parameters
     ----------
@@ -124,9 +133,11 @@ def thinning(trace):
 
     # Calculate tau using the minimum ESS (to be conservative)
     tau = total_samples / min_ess
-    print(f"The autocorrelation time (tau) based on min ESS is approximately: {tau:.2f}")
+    print(
+        f"The autocorrelation time (tau) based on min ESS is approximately: {tau:.2f}"
+    )
 
-    # Calculate thinning interval as the ceiling of tau to ensure it's an integer to be consrtvative
+    # Calculate thinning interval as the ceiling of tau to be consrtvative
     thinning_interval = int(np.ceil(tau))
     print(f"Thinning interval: {thinning_interval}")
 
@@ -141,30 +152,37 @@ def thinning(trace):
     num_samples_per_chain = len(thinned_trace.posterior.draw)
     total_samples_thinned = num_chains * num_samples_per_chain
 
-    print(f"Thinned trace: {total_samples_thinned} samples in total, with {num_samples_per_chain} samples per chain across {num_chains} chains.")
+    print(
+        f"Thinned trace: {total_samples_thinned} samples in total, ",
+        "with {num_samples_per_chain} samples per chain across {num_chains} chains.",
+    )
 
     return thinned_trace
+
 
 def convergence_diagnostic(thinned_trace):
     """
     Evaluate convergence diagnostics for a thinned MCMC trace.
 
-    This function calculates convergence diagnostics for each parameter in the thinned trace, including the mean, 
-    standard error of the mean, standard deviation, standard error of the standard deviation, autocorrelation time 
-    (tau), and the Gelman-Rubin statistic (r_hat). The diagnostics are organised and displayed in a pandas DataFrame.
+    This function calculates convergence diagnostics for each parameter in the
+    thinned trace, including the mean, standard error of the mean,
+    standard deviation, standard error of the standard deviation,
+    autocorrelation time (tau) and the Gelman-Rubin statistic (r_hat).
+    The diagnostics are organised and displayed in a pandas DataFrame.
 
     Parameters
     ----------
     thinned_trace : arviz.InferenceData
-        The thinned MCMC trace for which convergence diagnostics are to be calculated, encapsulated in an ArviZ 
-        InferenceData object.
+        The thinned MCMC trace for which convergence diagnostics are to be
+        calculated, encapsulated in an ArviZ InferenceData object.
 
     Returns
     -------
     diagnostic_df : pandas.DataFrame
-        A DataFrame containing the convergence diagnostics for each parameter in the thinned trace, including mean, 
-        standard error of the mean (SE_mean), standard deviation (sd), standard error of the standard deviation (SE_sd), 
-        autocorrelation time (tau), and the Gelman-Rubin statistic (r_hat).
+        A DataFrame containing the convergence diagnostics for each parameter in
+        the thinned trace, including mean, standard error of the mean (SE_mean),
+        standard deviation (sd), standard error of the standard deviation (SE_sd),
+        autocorrelation time (tau) and the Gelman-Rubin statistic (r_hat).
 
     Notes
     -----
@@ -176,30 +194,32 @@ def convergence_diagnostic(thinned_trace):
     num_samples_per_chain = len(thinned_trace.posterior.draw)
     total_samples_thinned = num_chains * num_samples_per_chain
 
-
     # Compute the mean and standard deviation for each parameter
     summary_stats = az.summary(thinned_trace, round_to=2)
 
     # Create a DataFrame to hold the results
-    diagnostic_df = pd.DataFrame({
-        'mean': summary_stats['mean'],
-        'SE_mean': summary_stats['sd'] / np.sqrt(total_samples_thinned),
-        'sd': summary_stats['sd'],
-        'SE_sd': summary_stats['sd'] / np.sqrt(2 * total_samples_thinned),
-        'sd': summary_stats['sd'],
-        'tau': summary_stats['ess_bulk'] / summary_stats['ess_mean'],
-        'r_hat': summary_stats['r_hat']
-    })
+    diagnostic_df = pd.DataFrame(
+        {
+            "mean": summary_stats["mean"],
+            "SE_mean": summary_stats["sd"] / np.sqrt(total_samples_thinned),
+            "sd": summary_stats["sd"],
+            "SE_sd": summary_stats["sd"] / np.sqrt(2 * total_samples_thinned),
+            "tau": summary_stats["ess_bulk"] / summary_stats["ess_mean"],
+            "r_hat": summary_stats["r_hat"],
+        }
+    )
 
     # Print the DataFrame as a table
     print(diagnostic_df)
+
 
 def appendix_data(trace):
     """
     Print a summary of the MCMC trace data.
 
-    This function uses ArviZ's summary function to compute and display a summary of the MCMC trace data,
-    including the mean, standard deviation, and the effective sample size for each parameter, among other statistics.
+    This function uses ArviZ's summary function to compute and display a
+    summary of the MCMC trace data, including the mean, standard deviation
+    and the effective sample size for each parameter, among other statistics.
 
     Parameters
     ----------
