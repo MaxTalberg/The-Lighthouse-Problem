@@ -17,7 +17,10 @@ by **Max Talberg**
      ```
 
 2. **Set up the virtual environment:**
-
+   - Navigate to the project directory:
+     ```bash
+       cd mt942
+       ```
    - Create virtual environment:
      ```bash
      conda env create -f environment.yml
