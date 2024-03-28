@@ -50,4 +50,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Use of generative tools
 
-This project has utilised autogenerative tools in the development of documentation that is compatible with auto-documentation tools and the development of plotting functions.
+This project has utilised auto-generative tools in the development of documentation that is compatible with auto-documentation tools, latex formatting and the development of plotting functions. 
+
+Example prompts used for this project:
+- Generate doc-strings in NumPy format for this function.
+- Generate this equation in Latex
+- Generate Latex code for a subplot.
+- Generate Latex code for a table.
+- Generate Python code for a 3 by 1 subplot.
